@@ -1,0 +1,16 @@
+[
+  {
+    "id": "rust-logo",
+    "source_url": "https://github.com/rust-lang/rust-artwork/blob/master/logo/rust-logo.svg",
+    "download_url": "https://raw.githubusercontent.com/rust-lang/rust-artwork/master/logo/rust-logo.svg",
+    "local_path": "packages/ui/assets/images/tech/rust-logo.svg",
+    "fetched_at": "2026-04-29"
+  },
+  {
+    "id": "dioxus-logo-full",
+    "source_url": "https://github.com/DioxusLabs/docsite/blob/main/packages/docs-07/assets/blog/release-03/dioxuslogo_full.png",
+    "download_url": "https://raw.githubusercontent.com/DioxusLabs/docsite/main/packages/docs-07/assets/blog/release-03/dioxuslogo_full.png",
+    "local_path": "packages/ui/assets/images/tech/dioxus-logo-full.png",
+    "fetched_at": "2026-04-29"
+  }
+]

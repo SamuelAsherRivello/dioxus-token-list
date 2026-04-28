@@ -1,0 +1,287 @@
+#top-navigation {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  min-height: 74px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--app-border);
+  border-radius: 0 0 8px 8px;
+  background: color-mix(in srgb, var(--app-background) 82%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+#top-navigation .toast-region {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(420px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+#top-navigation .toast {
+  max-width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--app-control-border);
+  border-radius: 8px;
+  background: var(--app-surface-strong);
+  color: var(--app-text-muted);
+  font-size: 14px;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: var(--app-shadow-soft);
+}
+
+#top-navigation .toast--info {
+  border-color: var(--app-accent);
+  color: var(--app-accent-strong);
+}
+
+.app-shell--dark #top-navigation .toast--info {
+  color: var(--app-accent-strong);
+}
+
+#top-navigation .toast--success {
+  border-color: var(--app-positive);
+  color: var(--app-positive);
+}
+
+#top-navigation .toast--error {
+  border-color: var(--app-negative);
+  color: var(--app-negative);
+}
+
+#top-navigation nav {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 74px;
+  white-space: nowrap;
+}
+
+#top-navigation a {
+  color: var(--app-text-muted);
+  font-size: 15px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+#top-navigation a:visited {
+  color: var(--app-text-muted);
+}
+
+#top-navigation nav a {
+  min-height: 40px;
+  padding: 10px 13px;
+  border-radius: 8px;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+#top-navigation nav a:hover,
+#top-navigation nav a:focus-visible {
+  background: var(--app-accent-soft);
+  color: var(--app-accent-strong);
+}
+
+.developer-tools {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+#top-navigation .developer-tools__github {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--app-control-border);
+  border-radius: 8px;
+  color: var(--app-text);
+  background: var(--app-control);
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+#top-navigation .developer-tools__github:visited {
+  color: var(--app-text);
+}
+
+#top-navigation .developer-tools__github:hover,
+#top-navigation .developer-tools__github:focus-visible {
+  color: var(--app-accent-strong);
+  background: var(--app-control-hover);
+  transform: translateY(-1px);
+}
+
+.developer-tools__github svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.developer-tools__github-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.developer-tools__language-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.developer-tools__language,
+.developer-tools__repopulate,
+.developer-tools__theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 13px;
+  border: 1px solid var(--app-control-border);
+  border-radius: 8px;
+  background: var(--app-control);
+  color: var(--app-text-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.developer-tools__language {
+  width: 62px;
+  gap: 6px;
+  padding: 0 9px;
+}
+
+.developer-tools__language img,
+.developer-tools__language-option img {
+  display: block;
+  width: 24px;
+  height: 16px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--app-text) 16%, transparent);
+}
+
+.developer-tools__language-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid var(--app-control-border);
+  border-radius: 8px;
+  background: var(--app-surface-strong);
+  box-shadow: var(--app-shadow-soft);
+}
+
+.developer-tools__language-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.developer-tools__language-option:hover,
+.developer-tools__language-option:focus-visible,
+.developer-tools__language-option--active {
+  border-color: var(--app-accent);
+  background: var(--app-accent-soft);
+}
+
+.developer-tools__language-caret {
+  flex: 0 0 auto;
+  color: var(--app-text-subtle);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.developer-tools__button-icon {
+  flex: 0 0 auto;
+}
+
+.developer-tools__theme {
+  inline-size: 115.2px;
+}
+
+.developer-tools__language:hover,
+.developer-tools__repopulate:hover,
+.developer-tools__theme:hover {
+  background: var(--app-control-hover);
+  color: var(--app-accent-strong);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 760px) {
+  #top-navigation {
+    width: min(100% - 28px, 1120px);
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 8px 20px;
+  }
+
+  #top-navigation nav {
+    gap: 4px;
+    min-height: 44px;
+  }
+
+  #top-navigation nav a {
+    padding: 9px 8px;
+  }
+
+  .developer-tools {
+    gap: 6px;
+  }
+
+  .developer-tools__language,
+  .developer-tools__repopulate,
+  .developer-tools__theme {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    gap: 0;
+  }
+
+  .developer-tools__repopulate span,
+  .developer-tools__theme span {
+    display: none;
+  }
+
+  .developer-tools__language {
+    flex-basis: 52px;
+    width: 52px;
+    padding: 0 8px;
+  }
+
+  #top-navigation .toast-region {
+    width: min(376px, calc(100vw - 32px));
+  }
+}

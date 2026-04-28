@@ -1,0 +1,168 @@
+use dioxus_i18n::fluent::{FluentArgs, FluentBundle, FluentResource};
+use dioxus_i18n::unic_langid::LanguageIdentifier;
+use ui::{AppLanguage, Theme};
+
+const LOCALES: [(&str, &str); 4] = [
+    (
+        "en-US",
+        include_str!("../src/services/i18n/en-US.ftl"),
+    ),
+    (
+        "es-MX",
+        include_str!("../src/services/i18n/es-MX.ftl"),
+    ),
+    (
+        "pt-BR",
+        include_str!("../src/services/i18n/pt-BR.ftl"),
+    ),
+    (
+        "fr-FR",
+        include_str!("../src/services/i18n/fr-FR.ftl"),
+    ),
+];
+
+const TRANSLATION_KEYS: &[&str] = &[
+    "nav-home",
+    "nav-about",
+    "nav-contact",
+    "open-github-repository",
+    "repopulate-database",
+    "repopulate-db",
+    "toggle-theme",
+    "theme",
+    "language-selector",
+    "language-en",
+    "language-es",
+    "language-pt",
+    "language-fr",
+    "loading-market-data",
+    "market-data-unavailable",
+    "market-data-unavailable-heading",
+    "top-crypto-currencies",
+    "market-data-provider",
+    "online-last-updated",
+    "not-loaded-this-session",
+    "source-database",
+    "source-online",
+    "just-now",
+    "duration-seconds",
+    "duration-minutes",
+    "duration-hours",
+    "duration-days",
+    "not-available",
+    "token-header-asset",
+    "token-header-price",
+    "token-header-change",
+    "token-header-market-cap",
+    "token-header-volume",
+    "token-logo-alt",
+    "about-title",
+    "about-intro-1",
+    "about-intro-2",
+    "about-intro-3",
+    "rust-title",
+    "rust-copy-1",
+    "rust-copy-2",
+    "dioxus-title",
+    "dioxus-copy-1",
+    "dioxus-copy-2",
+    "profile-alt",
+    "rust-logo-alt",
+    "dioxus-logo-alt",
+    "contact-title",
+    "contact-intro",
+    "contact-links",
+    "contact-form",
+    "send-direct-message",
+    "linkedin",
+    "connect-professionally",
+    "footer-rights",
+];
+
+#[test]
+fn theme_labels_match_display_text() {
+    assert_eq!(Theme::Light.label(), "Light");
+    assert_eq!(Theme::Dark.label(), "Dark");
+}
+
+#[test]
+fn theme_class_names_match_shell_modifiers() {
+    assert_eq!(Theme::Light.class_name(), "app-shell--light");
+    assert_eq!(Theme::Dark.class_name(), "app-shell--dark");
+}
+
+#[test]
+fn theme_default_is_dark() {
+    assert_eq!(Theme::default(), Theme::Dark);
+}
+
+#[test]
+fn theme_toggle_switches_between_light_and_dark() {
+    assert_eq!(Theme::Light.toggled(), Theme::Dark);
+    assert_eq!(Theme::Dark.toggled(), Theme::Light);
+}
+
+#[test]
+fn language_default_is_english() {
+    assert_eq!(AppLanguage::default(), AppLanguage::En);
+}
+
+#[test]
+fn locale_files_are_valid_fluent() {
+    for (locale, source) in LOCALES {
+        FluentResource::try_new(source.to_string())
+            .unwrap_or_else(|errors| panic!("{locale} has invalid Fluent syntax: {errors:#?}"));
+    }
+}
+
+#[test]
+fn locale_files_cover_all_ui_translation_keys() {
+    for (locale, source) in LOCALES {
+        for key in TRANSLATION_KEYS {
+            let has_key = source
+                .lines()
+                .any(|line| line.trim_start().starts_with(&format!("{key} =")));
+
+            assert!(has_key, "{locale} is missing translation key `{key}`");
+        }
+    }
+}
+
+#[test]
+fn locale_files_format_all_ui_translation_keys() {
+    let mut args = FluentArgs::new();
+    args.set("value", 2);
+    args.set("name", "Bitcoin");
+
+    for (locale, source) in LOCALES {
+        let language_id = LanguageIdentifier::from_bytes(locale.as_bytes())
+            .unwrap_or_else(|error| panic!("{locale} has an invalid language id: {error}"));
+        let resource = FluentResource::try_new(source.to_string())
+            .unwrap_or_else(|errors| panic!("{locale} has invalid Fluent syntax: {errors:#?}"));
+        let mut bundle = FluentBundle::new(vec![language_id]);
+
+        bundle
+            .add_resource(resource)
+            .unwrap_or_else(|errors| panic!("{locale} has invalid Fluent resources: {errors:#?}"));
+
+        for key in TRANSLATION_KEYS {
+            let message = bundle
+                .get_message(key)
+                .unwrap_or_else(|| panic!("{locale} is missing translation key `{key}`"));
+            let pattern = message
+                .value()
+                .unwrap_or_else(|| panic!("{locale} translation key `{key}` has no value"));
+            let mut errors = Vec::new();
+            let formatted = bundle.format_pattern(pattern, Some(&args), &mut errors);
+
+            assert!(
+                errors.is_empty(),
+                "{locale} translation key `{key}` failed to format: {errors:#?}"
+            );
+            assert!(
+                !formatted.trim().is_empty(),
+                "{locale} translation key `{key}` formatted to empty text"
+            );
+        }
+    }
+}

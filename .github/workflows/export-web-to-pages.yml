@@ -1,0 +1,91 @@
+name: ExportWebToPages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build static web app
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust wasm target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli --version 0.7.6 --locked
+
+      - name: Build web app
+        run: dx build --package web --platform web --release --base-path dioxus-token-list
+
+      - name: Prepare Pages artifact
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p pages
+          cp -a target/dx/web/release/web/public/. pages/
+          cp pages/index.html pages/404.html
+          touch pages/.nojekyll
+          grep -q "Dioxus Token List" pages/index.html
+          grep -q "/dioxus-token-list/assets/web-" pages/index.html
+          find pages/assets -maxdepth 1 -name 'web_bg-*.wasm' -print -quit | grep -q .
+          find pages/assets -maxdepth 1 -name 'token_list-*.css' -print -quit | grep -q .
+
+      - name: Check GitHub Pages setup
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_ADMIN_TOKEN: ${{ secrets.PAGES_ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+            echo "PAGES_ENABLED=true" >> "${GITHUB_ENV}"
+          elif [ -n "${PAGES_ADMIN_TOKEN}" ]; then
+            echo "PAGES_ENABLED=false" >> "${GITHUB_ENV}"
+          else
+            echo "::error::GitHub Pages is not enabled. Enable it in Settings > Pages with Source set to GitHub Actions, or add a PAGES_ADMIN_TOKEN secret with Pages write permission so this workflow can enable it."
+            exit 1
+          fi
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: ${{ env.PAGES_ENABLED == 'false' }}
+          token: ${{ secrets.PAGES_ADMIN_TOKEN || github.token }}
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

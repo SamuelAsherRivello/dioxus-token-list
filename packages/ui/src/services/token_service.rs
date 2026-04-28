@@ -1,0 +1,101 @@
+use chrono::{DateTime, Utc};
+
+use crate::models::{TokenLoadResult, TokenSource};
+use crate::services::{database_service, online_service};
+
+#[cfg(target_arch = "wasm32")]
+pub async fn load_tokens() -> Result<TokenLoadResult, String> {
+    if let Some(result) = crate::services::storage_service::load_token_snapshot() {
+        return Ok(result);
+    }
+
+    refresh_tokens_from_online().await
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub async fn load_tokens() -> Result<TokenLoadResult, String> {
+    if let Ok(Some(result)) = load_tokens_from_database().await {
+        save_browser_snapshot(&result);
+        return Ok(result);
+    }
+
+    let result = refresh_tokens_from_online().await?;
+    save_browser_snapshot(&result);
+
+    Ok(result)
+}
+
+#[cfg(target_arch = "wasm32")]
+pub async fn refresh_tokens_from_online() -> Result<TokenLoadResult, String> {
+    let tokens = online_service::fetch_top_tokens().await?;
+    let online_last_updated_at = Some(Utc::now());
+
+    let result = TokenLoadResult {
+        tokens: tokens.clone(),
+        source: TokenSource::Online,
+        online_last_updated_at,
+        db_last_loaded_at: None,
+    };
+
+    save_browser_snapshot(&result);
+    persist_browser_database_in_background(tokens, online_last_updated_at);
+
+    Ok(result)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+pub async fn refresh_tokens_from_online() -> Result<TokenLoadResult, String> {
+    let tokens = online_service::fetch_top_tokens().await?;
+    let online_last_updated_at = Some(Utc::now());
+
+    let db_last_loaded_at =
+        database_service::replace_cached_tokens(&tokens, online_last_updated_at)
+            .await
+            .ok()
+            .map(|_| Utc::now());
+
+    let result = TokenLoadResult {
+        tokens,
+        source: TokenSource::Online,
+        online_last_updated_at,
+        db_last_loaded_at,
+    };
+
+    save_browser_snapshot(&result);
+
+    Ok(result)
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+async fn load_tokens_from_database() -> Result<Option<TokenLoadResult>, String> {
+    let cached = database_service::load_cached_tokens().await?;
+
+    if cached.tokens.is_empty() {
+        return Ok(None);
+    }
+
+    Ok(Some(TokenLoadResult {
+        tokens: cached.tokens,
+        source: TokenSource::Database,
+        online_last_updated_at: cached.online_last_updated_at,
+        db_last_loaded_at: Some(DateTime::<Utc>::from(std::time::SystemTime::now())),
+    }))
+}
+
+fn save_browser_snapshot(result: &TokenLoadResult) {
+    #[cfg(target_arch = "wasm32")]
+    crate::services::storage_service::save_token_snapshot(result);
+
+    #[cfg(not(target_arch = "wasm32"))]
+    let _ = result;
+}
+
+#[cfg(target_arch = "wasm32")]
+fn persist_browser_database_in_background(
+    tokens: Vec<crate::models::Token>,
+    online_last_updated_at: Option<DateTime<Utc>>,
+) {
+    wasm_bindgen_futures::spawn_local(async move {
+        let _ = database_service::replace_cached_tokens(&tokens, online_last_updated_at).await;
+    });
+}
