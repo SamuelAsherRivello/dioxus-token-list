@@ -93,6 +93,8 @@ pub fn DeveloperTools() -> Element {
                     },
                     img {
                         src: selected_language.flag_asset(),
+                        width: "24",
+                        height: "16",
                         alt: "",
                     }
                     span { class: "developer-tools__language-caret", "▾" }
@@ -127,6 +129,8 @@ pub fn DeveloperTools() -> Element {
                                 },
                                 img {
                                     src: option_language.flag_asset(),
+                                    width: "24",
+                                    height: "16",
                                     alt: "",
                                 }
                             }

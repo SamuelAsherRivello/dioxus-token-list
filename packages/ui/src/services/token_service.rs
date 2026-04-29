@@ -1,12 +1,14 @@
 use chrono::{DateTime, Utc};
 
-use crate::models::{TokenLoadResult, TokenSource};
+use crate::models::{Token, TokenLoadResult, TokenSource};
 use crate::services::{database_service, online_service};
 
 #[cfg(target_arch = "wasm32")]
 pub async fn load_tokens() -> Result<TokenLoadResult, String> {
     if let Some(result) = crate::services::storage_service::load_token_snapshot() {
-        return Ok(result);
+        if token_result_has_sparkline_data(&result) {
+            return Ok(result);
+        }
     }
 
     refresh_tokens_from_online().await
@@ -15,8 +17,10 @@ pub async fn load_tokens() -> Result<TokenLoadResult, String> {
 #[cfg(not(target_arch = "wasm32"))]
 pub async fn load_tokens() -> Result<TokenLoadResult, String> {
     if let Ok(Some(result)) = load_tokens_from_database().await {
-        save_browser_snapshot(&result);
-        return Ok(result);
+        if token_result_has_sparkline_data(&result) {
+            save_browser_snapshot(&result);
+            return Ok(result);
+        }
     }
 
     let result = refresh_tokens_from_online().await?;
@@ -88,6 +92,25 @@ fn save_browser_snapshot(result: &TokenLoadResult) {
 
     #[cfg(not(target_arch = "wasm32"))]
     let _ = result;
+}
+
+pub fn token_result_has_sparkline_data(result: &TokenLoadResult) -> bool {
+    tokens_have_sparkline_data(&result.tokens)
+}
+
+fn tokens_have_sparkline_data(tokens: &[Token]) -> bool {
+    !tokens.is_empty()
+        && tokens.iter().all(|token| {
+            token.sparkline_in_7d.as_ref().is_some_and(|sparkline| {
+                sparkline
+                    .price
+                    .iter()
+                    .filter(|price| price.is_finite())
+                    .take(2)
+                    .count()
+                    >= 2
+            })
+        })
 }
 
 #[cfg(target_arch = "wasm32")]

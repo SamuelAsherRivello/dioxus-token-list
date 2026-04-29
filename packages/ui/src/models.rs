@@ -12,6 +12,14 @@ pub struct Token {
     pub market_cap_rank: Option<u32>,
     pub total_volume: Option<f64>,
     pub price_change_percentage_24h: Option<f64>,
+    #[serde(default)]
+    pub sparkline_in_7d: Option<TokenSparkline>,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct TokenSparkline {
+    #[serde(default)]
+    pub price: Vec<f64>,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]

@@ -28,6 +28,8 @@ pub fn About() -> Element {
             img {
                 class: "about-page__portrait",
                 src: PROFILE_IMAGE,
+                width: "330",
+                height: "413",
                 alt: t!("profile-alt"),
             }
         }
@@ -36,6 +38,8 @@ pub fn About() -> Element {
             img {
                 class: "about-feature__image about-feature__image--rust",
                 src: RUST_LOGO,
+                width: "330",
+                height: "330",
                 alt: t!("rust-logo-alt"),
             }
 
@@ -55,6 +59,8 @@ pub fn About() -> Element {
                 img {
                     class: "about-dioxus__image",
                     src: DIOXUS_LOGO,
+                    width: "330",
+                    height: "224",
                     alt: t!("dioxus-logo-alt"),
                 }
             }

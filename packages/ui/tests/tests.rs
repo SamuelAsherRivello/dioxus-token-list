@@ -3,22 +3,10 @@ use dioxus_i18n::unic_langid::LanguageIdentifier;
 use ui::{AppLanguage, Theme};
 
 const LOCALES: [(&str, &str); 4] = [
-    (
-        "en-US",
-        include_str!("../src/services/i18n/en-US.ftl"),
-    ),
-    (
-        "es-MX",
-        include_str!("../src/services/i18n/es-MX.ftl"),
-    ),
-    (
-        "pt-BR",
-        include_str!("../src/services/i18n/pt-BR.ftl"),
-    ),
-    (
-        "fr-FR",
-        include_str!("../src/services/i18n/fr-FR.ftl"),
-    ),
+    ("en-US", include_str!("../assets/i18n/en-US.ftl")),
+    ("es-MX", include_str!("../assets/i18n/es-MX.ftl")),
+    ("pt-BR", include_str!("../assets/i18n/pt-BR.ftl")),
+    ("fr-FR", include_str!("../assets/i18n/fr-FR.ftl")),
 ];
 
 const TRANSLATION_KEYS: &[&str] = &[
@@ -53,6 +41,7 @@ const TRANSLATION_KEYS: &[&str] = &[
     "token-header-asset",
     "token-header-price",
     "token-header-change",
+    "token-header-seven-day",
     "token-header-market-cap",
     "token-header-volume",
     "token-logo-alt",

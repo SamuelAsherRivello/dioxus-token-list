@@ -16,12 +16,27 @@ pub fn TopNavigation() -> Element {
 
         header { id: "top-navigation",
             nav {
-                Link { to: Route::Home {}, {t!("nav-home")} }
-                Link { to: Route::About {}, {t!("nav-about")} }
-                Link { to: Route::Contact {}, {t!("nav-contact")} }
+                div { class: "top-navigation__pages",
+                    Link { to: Route::Home {},
+                        span { class: "top-navigation__label-full", {t!("nav-home")} }
+                        span { class: "top-navigation__label-short", {t!("nav-home-short")} }
+                    }
+                    Link { to: Route::Video {},
+                        span { class: "top-navigation__label-full", {t!("nav-video")} }
+                        span { class: "top-navigation__label-short", {t!("nav-video-short")} }
+                    }
+                    Link { to: Route::About {},
+                        span { class: "top-navigation__label-full", {t!("nav-about")} }
+                        span { class: "top-navigation__label-short", {t!("nav-about-short")} }
+                    }
+                    Link { to: Route::Contact {},
+                        span { class: "top-navigation__label-full", {t!("nav-contact")} }
+                        span { class: "top-navigation__label-short", {t!("nav-contact-short")} }
+                    }
+                }
+                DeveloperTools {}
             }
             ToastRegion { toast }
-            DeveloperTools {}
         }
     }
 }

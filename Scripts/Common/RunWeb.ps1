@@ -54,6 +54,11 @@ if ($wifiAddress) {
 }
 Write-Host ""
 
-& (Join-Path $repoRoot "Scripts\Common\BuildTailwind.ps1")
+if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+    throw "npm is required for Tailwind CSS. Run Scripts\Common\InstallDependencies.ps1 first."
+}
+
+Write-Host "Building Tailwind CSS..."
+npm run tailwind:build
 
 dx serve --platform web --addr $Address --port $Port

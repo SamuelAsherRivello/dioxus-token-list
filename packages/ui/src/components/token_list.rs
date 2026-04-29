@@ -14,6 +14,7 @@ pub fn TokenList(tokens: Vec<Token>) -> Element {
                 span { {t!("token-header-change")} }
                 span { {t!("token-header-market-cap")} }
                 span { {t!("token-header-volume")} }
+                span { {t!("token-header-seven-day")} }
             }
             ol { class: "token-list__items",
                 for token in tokens {

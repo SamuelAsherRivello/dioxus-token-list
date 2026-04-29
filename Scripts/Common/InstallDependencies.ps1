@@ -70,15 +70,24 @@ function Ensure-NodeDependencies {
         throw "npm is required for Tailwind CSS. Install Node.js from https://nodejs.org/ and rerun this script."
     }
 
-    npm install
+    if (-not (Test-Path (Join-Path $ProjectRoot "node_modules\.bin\tailwindcss.cmd"))) {
+        Write-Host "Installing Tailwind CSS dependencies..."
+        npm install
+    } else {
+        Write-Host "Tailwind CSS dependencies are already installed."
+    }
+}
+
+function Build-TailwindCss {
+    Write-Host "Building Tailwind CSS..."
+    npm run tailwind:build
 }
 
 Ensure-RustToolchain
 Ensure-WasmTarget
 Ensure-DioxusCli
 Ensure-NodeDependencies
-
-& (Join-Path $ProjectRoot "Scripts\Common\BuildTailwind.ps1")
+Build-TailwindCss
 
 Write-Host ""
 Write-Host "Running validation build..."

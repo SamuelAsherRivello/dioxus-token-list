@@ -1,38 +1,12 @@
 html {
-    overflow-y: scroll;
-    scrollbar-gutter: stable;
-    scrollbar-color: #0b6b78 #d9f0ef;
-}
-
-html:has(.app-shell--dark) {
-    scrollbar-color: #55c7b9 #141920;
-}
-
-html::-webkit-scrollbar {
-    width: 14px;
-}
-
-html::-webkit-scrollbar-track {
-    background: #d9f0ef;
-}
-
-html::-webkit-scrollbar-thumb {
-    border: 3px solid #d9f0ef;
-    border-radius: 999px;
-    background: #0b6b78;
-}
-
-html:has(.app-shell--dark)::-webkit-scrollbar-track {
-    background: #141920;
-}
-
-html:has(.app-shell--dark)::-webkit-scrollbar-thumb {
-    border-color: #141920;
-    background: #55c7b9;
+    height: 100%;
+    overflow: hidden;
 }
 
 body {
+    height: 100%;
     margin: 0;
+    overflow: hidden;
     background: #eef2f5;
     color: #18212f;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -41,6 +15,37 @@ body {
 body:has(.app-shell--dark) {
     background: #080b10;
     color: #f6f3ec;
+}
+
+.app-shell {
+    scrollbar-color: #0b6b78 #d9f0ef;
+}
+
+.app-shell--dark {
+    scrollbar-color: #55c7b9 #141920;
+}
+
+.app-shell::-webkit-scrollbar {
+    width: 14px;
+}
+
+.app-shell::-webkit-scrollbar-track {
+    background: #d9f0ef;
+}
+
+.app-shell::-webkit-scrollbar-thumb {
+    border: 3px solid #d9f0ef;
+    border-radius: 999px;
+    background: #0b6b78;
+}
+
+.app-shell--dark::-webkit-scrollbar-track {
+    background: #141920;
+}
+
+.app-shell--dark::-webkit-scrollbar-thumb {
+    border-color: #141920;
+    background: #55c7b9;
 }
 
 * {
@@ -77,8 +82,11 @@ textarea {
     --app-negative: #bd2a2a;
     --app-shadow: 0 24px 70px rgba(29, 47, 60, 0.16);
     --app-shadow-soft: 0 12px 32px rgba(29, 47, 60, 0.12);
+    height: 100vh;
     min-height: 100vh;
     overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
     background:
         linear-gradient(132deg, rgba(217, 240, 239, 0.9), transparent 38%),
         linear-gradient(28deg, rgba(248, 230, 216, 0.78), transparent 42%),

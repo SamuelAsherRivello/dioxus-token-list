@@ -10,6 +10,9 @@ pub enum Route {
     #[route("/")]
     Home {},
 
+    #[route("/video")]
+    Video {},
+
     #[route("/about")]
     About {},
 
@@ -39,8 +42,30 @@ fn AppLayout() -> Element {
     rsx! {
         div { class: "{shell_class}",
             TopNavigation {}
-            Outlet::<Route> {}
+            PageStack {}
             Footer {}
+        }
+    }
+}
+
+#[component]
+fn PageStack() -> Element {
+    rsx! {
+        div {
+            class: "page-stack",
+            style: "position: relative; isolation: isolate;",
+            Page { route: Route::Home {}, will_preload: true,
+                Home {}
+            }
+            Page { route: Route::Video {}, will_preload: true,
+                Video {}
+            }
+            Page { route: Route::About {}, will_preload: true,
+                About {}
+            }
+            Page { route: Route::Contact {}, will_preload: true,
+                Contact {}
+            }
         }
     }
 }
@@ -52,15 +77,18 @@ mod pages {
     pub mod about;
     pub mod contact;
     pub mod home;
+    pub mod video;
 }
 pub use pages::about::About;
 pub use pages::contact::Contact;
 pub use pages::home::Home;
+pub use pages::video::Video;
 
 mod components {
     pub mod developer_tools;
     pub mod footer;
     pub mod main;
+    pub mod page;
     pub mod toast;
     pub mod token_list;
     pub mod token_list_item;
@@ -69,6 +97,7 @@ mod components {
 pub use components::developer_tools::DeveloperTools;
 pub use components::footer::Footer;
 pub use components::main::{Main, TokenLoadRequest};
+pub use components::page::Page;
 pub use components::token_list::TokenList;
 pub use components::token_list_item::TokenListItem;
 pub use components::top_navigation::TopNavigation;

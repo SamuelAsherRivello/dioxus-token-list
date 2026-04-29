@@ -2,7 +2,7 @@ use reqwest::header;
 
 use crate::models::Token;
 
-const COINGECKO_MARKETS_URL: &str = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false&price_change_percentage=24h";
+const COINGECKO_MARKETS_URL: &str = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=24h";
 const COINGECKO_TIMEOUT_SECONDS: u64 = 5;
 
 pub async fn fetch_top_tokens() -> Result<Vec<Token>, String> {

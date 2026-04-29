@@ -4,7 +4,9 @@ use dioxus_i18n::t;
 use crate::components::toast::{wait_for_toast_timeout, Toast, ToastTone};
 use crate::components::token_list::TokenList;
 use crate::models::{TokenLoadResult, TokenSource};
-use crate::services::token_service::{load_tokens, refresh_tokens_from_online};
+use crate::services::token_service::{
+    load_tokens, refresh_tokens_from_online, token_result_has_sparkline_data,
+};
 
 const TOKEN_LIST_CSS: Asset = asset!("/assets/styling/token_list.css");
 const BITCOIN_HERO_IMAGE: Asset = asset!("/assets/images/crypto/bitcoin-hero-slick.png");
@@ -35,7 +37,10 @@ pub fn Main() -> Element {
         if request.sequence > initial_request_sequence {
             refresh_tokens_from_online().await
         } else if let Some(cached) = token_load_cache.peek().clone() {
-            cached
+            match cached {
+                Ok(result) if !token_result_has_sparkline_data(&result) => load_tokens().await,
+                _ => cached,
+            }
         } else {
             load_tokens().await
         }
@@ -127,17 +132,19 @@ pub fn Main() -> Element {
 
         main { class: "token-page",
             section { class: "token-page__intro",
+                img {
+                    class: "token-page__bitcoin-art",
+                    src: BITCOIN_HERO_IMAGE,
+                    width: "1120",
+                    height: "320",
+                    alt: "",
+                }
                 div { class: "token-page__intro-copy",
                     h1 { {t!("top-crypto-currencies")} }
                     p { {t!("market-data-provider")} }
                     div { class: "token-page__timestamps",
                         p { {t!("online-last-updated", value: online_last_updated_text)} }
                     }
-                }
-                img {
-                    class: "token-page__bitcoin-art",
-                    src: BITCOIN_HERO_IMAGE,
-                    alt: "",
                 }
             }
 

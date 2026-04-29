@@ -102,12 +102,36 @@
   object-fit: contain;
 }
 
+.app-shell--light .about-feature__image--rust {
+  filter:
+    drop-shadow(1px 0 0 rgba(255, 255, 255, 0.095))
+    drop-shadow(-1px 0 0 rgba(255, 255, 255, 0.095))
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.095))
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.095))
+    drop-shadow(2px 0 0 rgba(255, 255, 255, 0.07))
+    drop-shadow(-2px 0 0 rgba(255, 255, 255, 0.07))
+    drop-shadow(0 2px 0 rgba(255, 255, 255, 0.07))
+    drop-shadow(0 -2px 0 rgba(255, 255, 255, 0.07));
+}
+
+.app-shell--dark .about-feature__image--rust {
+  filter:
+    drop-shadow(1px 0 0 rgba(255, 255, 255, 0.22))
+    drop-shadow(-1px 0 0 rgba(255, 255, 255, 0.22))
+    drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22))
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.22));
+}
+
 .app-shell--dark .about-dioxus__image {
   filter:
     drop-shadow(1px 0 0 rgba(255, 255, 255, 0.95))
     drop-shadow(-1px 0 0 rgba(255, 255, 255, 0.95))
     drop-shadow(0 1px 0 rgba(255, 255, 255, 0.95))
-    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.95));
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.95))
+    drop-shadow(2px 0 0 rgba(255, 255, 255, 0.7))
+    drop-shadow(-2px 0 0 rgba(255, 255, 255, 0.7))
+    drop-shadow(0 2px 0 rgba(255, 255, 255, 0.7))
+    drop-shadow(0 -2px 0 rgba(255, 255, 255, 0.7));
 }
 
 .about-dioxus__copy {

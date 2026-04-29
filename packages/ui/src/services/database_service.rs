@@ -28,7 +28,7 @@ mod native {
         let mut statement = connection
             .prepare(
                 "SELECT id, symbol, name, image, current_price, market_cap, market_cap_rank,
-                    total_volume, price_change_percentage_24h
+                    total_volume, price_change_percentage_24h, price_sparkline_7d
              FROM token_list_items
              ORDER BY COALESCE(market_cap_rank, 999999), name",
             )
@@ -46,6 +46,7 @@ mod native {
                     market_cap_rank: row.get(6)?,
                     total_volume: row.get(7)?,
                     price_change_percentage_24h: row.get(8)?,
+                    sparkline_in_7d: deserialize_sparkline(row.get(9)?),
                 })
             })
             .map_err(|error| format!("Could not read token cache: {error}"))?;
@@ -84,8 +85,8 @@ mod native {
                 .execute(
                     "INSERT INTO token_list_items (
                     id, symbol, name, image, current_price, market_cap, market_cap_rank,
-                    total_volume, price_change_percentage_24h
-                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+                    total_volume, price_change_percentage_24h, price_sparkline_7d
+                ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
                     params![
                         token.id,
                         token.symbol,
@@ -96,6 +97,7 @@ mod native {
                         token.market_cap_rank,
                         token.total_volume,
                         token.price_change_percentage_24h,
+                        serialize_sparkline(token),
                     ],
                 )
                 .map_err(|error| format!("Could not write token cache row: {error}"))?;
@@ -148,7 +150,8 @@ mod native {
                 market_cap REAL,
                 market_cap_rank INTEGER,
                 total_volume REAL,
-                price_change_percentage_24h REAL
+                price_change_percentage_24h REAL,
+                price_sparkline_7d TEXT
             );
 
             CREATE TABLE IF NOT EXISTS token_cache_metadata (
@@ -157,7 +160,18 @@ mod native {
             );
             ",
             )
-            .map_err(|error| format!("Could not migrate token database: {error}"))
+            .map_err(|error| format!("Could not migrate token database: {error}"))?;
+
+        if !column_exists(connection, "token_list_items", "price_sparkline_7d")? {
+            connection
+                .execute(
+                    "ALTER TABLE token_list_items ADD COLUMN price_sparkline_7d TEXT",
+                    [],
+                )
+                .map_err(|error| format!("Could not migrate token sparkline cache: {error}"))?;
+        }
+
+        Ok(())
     }
 
     fn read_metadata(connection: &Connection, key: &str) -> Result<Option<String>, String> {
@@ -169,6 +183,36 @@ mod native {
             )
             .optional()
             .map_err(|error| format!("Could not read token cache metadata: {error}"))
+    }
+
+    fn column_exists(connection: &Connection, table: &str, column: &str) -> Result<bool, String> {
+        let mut statement = connection
+            .prepare(&format!("PRAGMA table_info({table})"))
+            .map_err(|error| format!("Could not inspect token cache schema: {error}"))?;
+        let columns = statement
+            .query_map([], |row| row.get::<_, String>(1))
+            .map_err(|error| format!("Could not inspect token cache schema: {error}"))?;
+
+        for name in columns {
+            if name.map_err(|error| format!("Could not read token cache schema: {error}"))?
+                == column
+            {
+                return Ok(true);
+            }
+        }
+
+        Ok(false)
+    }
+
+    fn serialize_sparkline(token: &Token) -> Option<String> {
+        token
+            .sparkline_in_7d
+            .as_ref()
+            .and_then(|sparkline| serde_json::to_string(sparkline).ok())
+    }
+
+    fn deserialize_sparkline(value: Option<String>) -> Option<crate::models::TokenSparkline> {
+        value.and_then(|value| serde_json::from_str(&value).ok())
     }
 }
 
@@ -197,7 +241,7 @@ mod browser {
 
         let result = sqlite_query(
             "SELECT id, symbol, name, image, current_price, market_cap, market_cap_rank,
-                    total_volume, price_change_percentage_24h
+                    total_volume, price_change_percentage_24h, price_sparkline_7d
              FROM token_list_items
              ORDER BY COALESCE(market_cap_rank, 999999), name",
             vec![],
@@ -249,8 +293,8 @@ mod browser {
             sqlite_exec(
                 "INSERT INTO token_list_items (
                     id, symbol, name, image, current_price, market_cap, market_cap_rank,
-                    total_volume, price_change_percentage_24h
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    total_volume, price_change_percentage_24h, price_sparkline_7d
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 vec![
                     JsValue::from_str(&token.id),
                     JsValue::from_str(&token.symbol),
@@ -264,6 +308,7 @@ mod browser {
                         .unwrap_or(JsValue::NULL),
                     optional_f64(token.total_volume),
                     optional_f64(token.price_change_percentage_24h),
+                    serialize_sparkline(token),
                 ],
             )
             .await?;
@@ -346,7 +391,8 @@ mod browser {
                 market_cap REAL,
                 market_cap_rank INTEGER,
                 total_volume REAL,
-                price_change_percentage_24h REAL
+                price_change_percentage_24h REAL,
+                price_sparkline_7d TEXT
             );
 
             CREATE TABLE IF NOT EXISTS token_cache_metadata (
@@ -356,7 +402,24 @@ mod browser {
             ",
             vec![],
         )
+        .await?;
+
+        match sqlite_exec(
+            "ALTER TABLE token_list_items ADD COLUMN price_sparkline_7d TEXT",
+            vec![],
+        )
         .await
+        {
+            Ok(()) => Ok(()),
+            Err(error)
+                if error.contains("duplicate column")
+                    || error.contains("already exists")
+                    || error.contains("duplicate column name") =>
+            {
+                Ok(())
+            }
+            Err(error) => Err(format!("Could not migrate token sparkline cache: {error}")),
+        }
     }
 
     async fn read_metadata(key: &str) -> Result<Option<String>, String> {
@@ -394,6 +457,7 @@ mod browser {
             market_cap_rank: f64_field(&row, "market_cap_rank").map(|value| value as u32),
             total_volume: f64_field(&row, "total_volume"),
             price_change_percentage_24h: f64_field(&row, "price_change_percentage_24h"),
+            sparkline_in_7d: deserialize_sparkline(string_field(&row, "price_sparkline_7d")),
         })
     }
 
@@ -427,6 +491,19 @@ mod browser {
 
     fn optional_f64(value: Option<f64>) -> JsValue {
         value.map(JsValue::from_f64).unwrap_or(JsValue::NULL)
+    }
+
+    fn serialize_sparkline(token: &Token) -> JsValue {
+        token
+            .sparkline_in_7d
+            .as_ref()
+            .and_then(|sparkline| serde_json::to_string(sparkline).ok())
+            .map(|value| JsValue::from_str(&value))
+            .unwrap_or(JsValue::NULL)
+    }
+
+    fn deserialize_sparkline(value: Option<String>) -> Option<crate::models::TokenSparkline> {
+        value.and_then(|value| serde_json::from_str(&value).ok())
     }
 
     async fn sqlite_exec(sql: &str, args: Vec<JsValue>) -> Result<(), String> {

@@ -37,6 +37,8 @@ pub fn Contact() -> Element {
                 img {
                     class: "contact-page__portrait",
                     src: PROFILE_IMAGE,
+                    width: "330",
+                    height: "413",
                     alt: t!("profile-alt"),
                 }
             }
