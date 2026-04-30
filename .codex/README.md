@@ -1,6 +1,6 @@
 # Codex Project Boilerplate
 
-Use this folder for Codex-specific project context that should travel with this repository.
+Use this folder for Codex-specific project context that should travel with this repository. Spec Kit workflow skills live in `.agents/skills`; keep `.codex` focused on project-specific rules and the Dioxus token-list skill.
 
 ## Project
 

@@ -68,9 +68,11 @@ This repo includes Codex-specific context so agent prompts can stay short and co
 | ---- | ------- |
 | [`AGENTS.md`](./AGENTS.md) | Dioxus 0.7 rules and project workflow instructions for agents. |
 | [`.agentignore`](./.agentignore) | Keeps agents away from build output, runtime data, test artifacts, logs, and dependency caches. |
-| [`.codex/prompts/`](./.codex/prompts/dioxus-token-list.md) | Reusable prompt draft for this checkout. |
+| [`.agents/skills/`](./.agents/skills) | Spec Kit skills for Codex, invoked as `$speckit-constitution`, `$speckit-specify`, `$speckit-plan`, `$speckit-tasks`, and related commands. |
 | [`.codex/rules/`](./.codex/rules/frontend-design.md) | Frontend design rule adapted from distinctive frontend skill guidance for this Dioxus token-list app. |
 | [`.codex/skills/`](./.codex/skills/dioxus-token-list-project/SKILL.md) | Project-specific skill guidance for Dioxus, cache, and verification work. |
+| [`.specify/`](./.specify) | Spec Kit project configuration, constitution, PowerShell workflow scripts, and templates. |
+| [`specs/`](./specs) | Feature specifications, starting with the status-quo baseline spec for the existing app. |
 
 <BR>
 
