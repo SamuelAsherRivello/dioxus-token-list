@@ -3,10 +3,10 @@ use dioxus_i18n::prelude::*;
 use dioxus_i18n::unic_langid::{langid, LanguageIdentifier};
 use serde::{Deserialize, Serialize};
 
-const EN_US: &str = include_str!("../../assets/i18n/en-US.ftl");
-const ES_MX: &str = include_str!("../../assets/i18n/es-MX.ftl");
-const PT_BR: &str = include_str!("../../assets/i18n/pt-BR.ftl");
-const FR_FR: &str = include_str!("../../assets/i18n/fr-FR.ftl");
+const EN_US: &str = include_str!("../../../assets/i18n/en-US.ftl");
+const ES_MX: &str = include_str!("../../../assets/i18n/es-MX.ftl");
+const PT_BR: &str = include_str!("../../../assets/i18n/pt-BR.ftl");
+const FR_FR: &str = include_str!("../../../assets/i18n/fr-FR.ftl");
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub enum AppLanguage {

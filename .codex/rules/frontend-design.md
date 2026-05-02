@@ -34,7 +34,7 @@ Inspired by Koomook's `claude-frontend-skills` distinctive frontend guidance, bu
 - Use motion to clarify state changes: load, refresh, row entrance, toast appearance, cache-source changes, and database repopulation.
 - Keep motion short and purposeful. Respect `prefers-reduced-motion`.
 - Preserve visible loading and toast-style status feedback during online fetches, browser snapshot reads, cache writes, SQLite reads, errors, and database repopulation.
-- Browser SQLite/OPFS startup must not block rendering when snapshot or online token data can show first.
+- Browser localStorage snapshots and online token data should render before optional cache work; do not block visible UI on persistence.
 
 ## Backgrounds And Assets
 
@@ -44,7 +44,7 @@ Inspired by Koomook's `claude-frontend-skills` distinctive frontend guidance, bu
 
 ## Verification
 
-- For UI, routing, asset, browser SQLite, or cache-visible changes, serve the real web app and verify it in the browser when practical.
+- For UI, routing, asset, or cache-visible changes, serve the real web app and verify it in the browser when practical.
 - If the web server is already running on the target port, stop it and restart it before trusting the browser result.
 - Check both narrow compile behavior and runtime behavior when a change can affect both web and desktop.
 - Use the smallest useful check, usually one of:

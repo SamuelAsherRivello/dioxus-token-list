@@ -2,10 +2,10 @@ use dioxus::prelude::*;
 use dioxus_charts::LineChart;
 use dioxus_i18n::t;
 
-use crate::components::main::{
+use crate::client::components::main::{
     format_currency, format_optional_currency, format_percent, local_token_icon,
 };
-use crate::models::Token;
+use crate::client::models::Token;
 
 const SPARKLINE_DAYS: usize = 7;
 const SPARKLINE_POINT_COUNT: usize = 50;

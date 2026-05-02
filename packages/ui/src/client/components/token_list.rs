@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
 use dioxus_i18n::t;
 
-use crate::components::token_list_item::TokenListItem;
-use crate::models::Token;
+use crate::client::components::token_list_item::TokenListItem;
+use crate::client::models::Token;
 
 #[component]
 pub fn TokenList(tokens: Vec<Token>) -> Element {

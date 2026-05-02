@@ -27,7 +27,7 @@ Primary docs: https://dioxuslabs.com/learn/0.7/
 - Read signal values with call syntax for cheap clones, `.read()` for borrowed reads, `.peek()` for non-subscribing reads, and write with `.set()`, `.write()`, or `.with_mut()`.
 - Use `.peek()` inside cache-write, toast-deduplication, or background persistence logic when a reactive subscription would create a feedback loop.
 - Use `use_memo` for derived values that should recalculate only when their dependencies change.
-- Use `use_context_provider` in layout/root components and `use_context::<Signal<T>>()` in descendants for shared state. This repo provides app-level context in `packages/ui/src/lib.rs`.
+- Use `use_context_provider` in layout/root components and `use_context::<Signal<T>>()` in descendants for shared state. This repo provides app-level context in `packages/ui/src/client/mod.rs`.
 - In effects and async closures, clone or copy only the values needed for the closure. Avoid keeping long borrows across `await`.
 
 ## Async Loading
@@ -36,11 +36,11 @@ Primary docs: https://dioxuslabs.com/learn/0.7/
 - `Resource` reads return `None` while loading and `Some(value)` after completion. Preserve a visible loading or toast state for `None`.
 - Use async event handlers or `spawn` for user-triggered work and timers.
 - Avoid overlapping user-triggered loads unless the existing flow supports them. Gate refresh behavior with existing request signals or explicit loading state.
-- Never block the first meaningful render on browser SQLite, OPFS, or worker startup when snapshot or online token data can render first.
+- Never block the first meaningful render on optional cache work when snapshot or online token data can render first.
 
 ## Routing And Layout
 
-- Keep routes in the single `Route` enum in `packages/ui/src/lib.rs`.
+- Keep routes in the single `Route` enum in `packages/ui/src/client/mod.rs`.
 - Use `#[derive(Routable, Clone, PartialEq)]`, `#[route("/path")]`, `#[layout(AppLayout)]`, `Router::<Route> {}`, and `Outlet::<Route> {}`.
 - Dynamic route fields must match component props and be owned values.
 - Render router-aware navigation only under `Router::<Route> {}`. If links fail at runtime, inspect layout and router context before changing unrelated assets.
@@ -50,14 +50,14 @@ Primary docs: https://dioxuslabs.com/learn/0.7/
 - Use `asset!("/assets/...")` for local files relative to the package root. Do not use absolute machine paths.
 - Keep shared CSS and images under `packages/ui/assets` when used by shared UI.
 - Inject styles with Dioxus document components already used in the repo, such as `document::Link { rel: "stylesheet", href: TOKEN_LIST_CSS }`.
-- Keep browser SQLite assets under `packages/web/public/assets/sqlite.org` unless the web startup code changes.
+- Keep normal token services under `packages/ui/src/client/services`; server functions under `packages/ui/src/server/services` should be optional probes or features that fail gracefully on static hosting.
 - For browser-visible styling or asset changes, run the real web app and inspect it instead of trusting compile success alone.
 
 ## Token Cache Behavior
 
-- Token data may come from online data, browser snapshot data, native SQLite, or browser SQLite.
+- Token data may come from online data, browser snapshot data, or native SQLite.
 - Preserve status feedback for token loading, cache reads, cache writes, SQLite operations, errors, and database repopulation.
-- Browser SQLite worker startup is sensitive. Prefer rendering from already available data first, then persisting or refreshing the SQLite cache in the background.
+- Prefer rendering from already available data first, then persisting or refreshing the native SQLite cache in the background when available.
 - Do not remove the current toast-style feedback path unless replacing it with an equivalent visible status mechanism.
 
 ## Verification
@@ -73,13 +73,13 @@ cargo check -p desktop
 .\Scripts\Common\RunDesktop.ps1
 ```
 
-For browser UI, routing, asset, browser SQLite, or cache-visible changes:
+For browser UI, routing, asset, or cache-visible changes:
 
 ```powershell
-dx serve --platform web --addr 0.0.0.0 --port 8080
+dx serve --platform web --addr <this-laptop-ipv4> --port 8080
 ```
 
-If port `8080` is already serving an older build, stop that server and restart this project before trusting browser results.
+Use a concrete local IPv4 address instead of `0.0.0.0` for fullstack web testing on Windows; the wildcard address can make backend readiness fail with `os error 10049`. If port `8080` is already serving an older build, stop that server and restart this project before trusting browser results.
 
 ## Useful Official Doc Pages
 

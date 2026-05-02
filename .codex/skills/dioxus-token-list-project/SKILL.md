@@ -1,6 +1,6 @@
 ---
 name: dioxus-token-list-project
-description: Work on the dioxus-token-list Rust workspace. Use when Codex is asked to modify, debug, verify, or explain this repository, especially Dioxus 0.7 UI, routing, assets, token loading, browser or desktop cache behavior, SQLite WASM, OPFS, or project scripts.
+description: Work on the dioxus-token-list Rust workspace. Use when Codex is asked to modify, debug, verify, or explain this repository, especially Dioxus 0.7 UI, routing, assets, token loading, browser localStorage snapshots, native SQLite cache behavior, optional server functions, or project scripts.
 ---
 
 # dioxus-token-list Project
@@ -20,13 +20,13 @@ Use this skill for repository-specific execution context. Follow `AGENTS.md` and
 
 | Path | Use |
 | ---- | --- |
-| `packages/ui/src/app.rs` | Shared app shell and routing. |
-| `packages/ui/src/components` | Shared Dioxus components. |
-| `packages/ui/src/pages` | Routed pages. |
-| `packages/ui/src/services` | Token, online, browser snapshot, and database services. |
+| `packages/ui/src/client/app.rs` | Shared app shell entry component. |
+| `packages/ui/src/client/components` | Shared Dioxus components. |
+| `packages/ui/src/client/pages` | Routed pages. |
+| `packages/ui/src/client/services` | Client token orchestration, storage, localization, online data, and database services. |
+| `packages/ui/src/server/services` | Optional server functions that can fail gracefully on static hosting. |
 | `packages/ui/assets` | Shared CSS and token images. |
 | `packages/web/src/main.rs` | Web entrypoint. |
-| `packages/web/public/assets/sqlite.org` | Browser SQLite WASM and worker assets. |
 | `packages/desktop/src/main.rs` | Desktop entrypoint. |
 | `Scripts` | Windows PowerShell setup and run workflows. |
 
@@ -44,7 +44,7 @@ Use this skill for repository-specific execution context. Follow `AGENTS.md` and
 
 - Preserve visible loading affordances during online fetches, cache reads, database writes, and repopulation.
 - Avoid feedback loops from reactive reads inside cache-write paths; use non-subscribing reads such as `peek()` when the codebase already follows that pattern.
-- Browser SQLite worker startup can be sensitive. Prefer rendering from snapshot or online data first, then persisting SQLite in the background when appropriate.
+- Browser builds currently use localStorage token snapshots instead of browser SQLite. Prefer rendering from snapshot or online data first, then persisting native SQLite in non-wasm builds when available.
 - Treat stale dev servers as a common source of false browser results.
 
 ## Verification
@@ -63,10 +63,10 @@ cargo check -p desktop
 For browser UI, routing, asset, or cache changes, serve the web app and inspect the actual page when practical. The default web target is:
 
 ```powershell
-dx serve --platform web --addr 0.0.0.0 --port 8080
+dx serve --platform web --addr <this-laptop-ipv4> --port 8080
 ```
 
-If `8080` is occupied by a stale server, stop that server and restart the project server.
+For fullstack web testing on Windows, use a concrete local IPv4 address instead of `0.0.0.0`; the wildcard address can make backend readiness fail with `os error 10049`. If `8080` is occupied by a stale server, stop that server and restart the project server.
 
 ## Response Style
 

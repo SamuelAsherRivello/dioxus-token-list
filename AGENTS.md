@@ -14,7 +14,8 @@ Provide concise code examples with detailed descriptions
 * Keep both web and desktop support intact unless the request is explicitly platform-specific.
 * For browser-visible changes, serve the real web app and verify the page when practical.
 * Preserve visible loading or toast-style status feedback during token loading, cache reads, cache writes, and database repopulation.
-* Browser SQLite startup can be sensitive; do not block the UI on OPFS/worker initialization when snapshot or online data can render first.
+* Token cache behavior currently lives in `packages/ui/src/client/services`: browser builds use localStorage snapshots, and non-wasm builds use native SQLite. `packages/ui/src/server/services` currently contains optional server-function probes; do not describe token cache reads/writes as server functions unless that architecture is changed first.
+* Do not reintroduce browser SQLite or OPFS worker startup for token caching.
 
 # Dioxus Dependency
 
@@ -52,10 +53,10 @@ Then serve with `dx serve`:
 
 ```sh
 curl -sSL http://dioxus.dev/install.sh | sh
-dx serve --platform web --addr 0.0.0.0 --port 8080
+dx serve --platform web --addr <this-laptop-ipv4> --port 8080
 ```
 
-> Note: Use `dx serve --platform web --addr 0.0.0.0 --port 8080` by default so the app is accessible from both laptop and mobile devices during testing.
+> Note: Use a concrete local IPv4 address instead of `0.0.0.0` for fullstack web testing on Windows. The wildcard address can make backend readiness fail with `os error 10049`.
 
 If you need to build or serve the app and a dev server is already running on the target port, stop that server and restart it so the browser is always pointed at the latest build for this project.
 

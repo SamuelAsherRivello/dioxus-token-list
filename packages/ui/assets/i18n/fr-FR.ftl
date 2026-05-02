@@ -10,6 +10,7 @@ nav-contact-short = C
 open-github-repository = Ouvrir le depot GitHub
 repopulate-database = Recharger la base de donnees
 repopulate-db = Recharger DB
+call-server = Appeler le serveur
 toggle-theme = Changer le theme
 theme = Theme
 language-selector = Selectionner la langue

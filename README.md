@@ -1,6 +1,6 @@
 # Dioxus Token List
 
-The app displays top market data from CoinGecko, caches from online data to local DB. Built with Dioxus and Rust, both the front-end and server-side.
+The app displays top market data from CoinGecko and keeps the normal web path static-host friendly. A small optional server-function probe is available in developer tools for local fullstack testing.
 
 
 <BR>
@@ -37,7 +37,7 @@ The static web build is exported and hosted automatically with each push to the 
 
 | Command | Required? | Description |
 | ------- | --------- | --- |
-| `.\Scripts\Common\RunWeb.ps1` | ✅ | Starts the web app on `0.0.0.0:8080` for laptop and same Wi-Fi phone testing. Stops an older `dx serve` process on that port first. |
+| `.\Scripts\Common\RunWeb.ps1` | ✅ | Starts the web app on a concrete local IPv4 address for laptop and same Wi-Fi phone testing. Stops an older `dx serve` process on that port first. |
 | `.\Scripts\Common\RunDesktop.ps1` | ✅ | Starts the desktop app with Dioxus desktop. |
 
 ### Other
@@ -52,11 +52,13 @@ The static web build is exported and hosted automatically with each push to the 
 
 | Path | Description |
 | ---- | ----------- |
-| [`packages/ui`](./packages/ui) | Shared Dioxus routes, components, models, services, CSS, and local token images. |
-| [`packages/web`](./packages/web) | Web entrypoint, favicon, web CSS, and browser SQLite WASM/worker files under `public/assets/sqlite.org`. |
+| [`packages/ui`](./packages/ui) | Shared Dioxus UI crate split into `src/client` for app UI/client services and `src/server` for optional server functions. |
+| [`packages/web`](./packages/web) | Web entrypoint, favicon, web CSS, and optional fullstack server feature wiring. |
 | [`packages/desktop`](./packages/desktop) | Desktop entrypoint and desktop CSS. |
 
-The shared UI crate owns the app shell, routes, token list, toast region, developer tools, token loading, storage, online fetches, and platform-specific database service modules.
+The shared UI crate owns the app shell, routes, token list, toast region, developer tools, token loading, and client storage/localization/online/database services.
+
+The current cache path is static-host friendly: browser builds use localStorage snapshots, non-wasm builds use native SQLite under local `data/`, and the server-function code path is an optional `Server` developer-tools probe rather than the token cache backend.
 
 <BR>
 

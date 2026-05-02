@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::services::localization_service::AppLanguage;
+use crate::client::services::localization_service::AppLanguage;
 
 #[cfg(target_arch = "wasm32")]
-use crate::models::TokenLoadResult;
+use crate::client::models::TokenLoadResult;
 
 #[cfg(target_arch = "wasm32")]
 const TOKEN_SNAPSHOT_KEY: &str = "dioxus-token-list:token-snapshot";
@@ -71,7 +71,7 @@ pub fn save_token_snapshot(result: &TokenLoadResult) {
 
 #[cfg(target_arch = "wasm32")]
 mod platform {
-    use crate::models::{TokenLoadResult, TokenSource};
+    use crate::client::models::{TokenLoadResult, TokenSource};
 
     use super::{AppLanguage, Theme, TOKEN_SNAPSHOT_KEY};
 

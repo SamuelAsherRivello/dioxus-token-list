@@ -1,6 +1,6 @@
 # Web App
 
-This crate contains the web app entrypoint, web routes, and web-only assets.
+This crate contains the web app entrypoint, favicon, web CSS, and optional fullstack server feature wiring.
 
 Run it from the workspace root:
 

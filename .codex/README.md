@@ -8,8 +8,8 @@ Use this folder for Codex-specific project context that should travel with this 
 
 | Path | Purpose |
 | ---- | ------- |
-| `packages/ui` | Shared Dioxus components, routes, models, services, CSS, and token assets. |
-| `packages/web` | Web app entrypoint plus browser assets, including SQLite WASM files under `public/assets/sqlite.org`. |
+| `packages/ui` | Shared Dioxus code split between `src/client` UI/client services and `src/server` optional server functions. |
+| `packages/web` | Web app entrypoint, web assets, and optional fullstack server feature wiring. |
 | `packages/desktop` | Desktop app entrypoint and desktop assets. |
 | `Scripts` | Windows PowerShell workflows for setup, web run, and desktop run. |
 | `Documentation/Images` | README screenshots and infographic assets. |
@@ -34,7 +34,7 @@ Prefer the repository scripts when possible:
 For direct Dioxus web work, use:
 
 ```powershell
-dx serve --platform web --addr 0.0.0.0 --port 8080
+dx serve --platform web --addr 127.0.0.1 --port 8080
 ```
 
 The web script stops an older `dx serve` process on the requested port before starting a new one. If you run `dx serve` directly and port `8080` is already occupied, stop the old server and restart it so browser testing uses the latest build for this checkout.
@@ -49,8 +49,8 @@ The web script stops an older `dx serve` process on the requested port before st
 ## Runtime Notes
 
 - The app supports web and desktop paths.
-- Token data can come from online data, browser snapshot data, and SQLite-backed caches.
-- Browser SQLite uses WASM/worker assets and OPFS where supported.
+- Token data can come from online data, browser snapshot data, and client-side native SQLite caches.
+- Server functions under `packages/ui/src/server/services` should stay optional so static hosting can fail gracefully.
 - Preserve visible loading or toast-style status feedback during cache refreshes and repopulation.
 - Browser behavior should be validated in a real served app when UI, routing, cache loading, or asset behavior changes.
 

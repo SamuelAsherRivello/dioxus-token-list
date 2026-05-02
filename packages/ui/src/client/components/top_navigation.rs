@@ -1,9 +1,9 @@
 use dioxus::prelude::*;
 use dioxus_i18n::t;
 
-use crate::components::developer_tools::DeveloperTools;
-use crate::components::toast::{Toast, ToastRegion};
-use crate::Route;
+use crate::client::components::developer_tools::DeveloperTools;
+use crate::client::components::toast::{Toast, ToastRegion};
+use crate::client::Route;
 
 const TOP_NAVIGATION_CSS: Asset = asset!("/assets/styling/top_navigation.css");
 

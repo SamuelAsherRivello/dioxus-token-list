@@ -1,10 +1,10 @@
 use dioxus::prelude::*;
 use dioxus_i18n::t;
 
-use crate::components::toast::{wait_for_toast_timeout, Toast, ToastTone};
-use crate::components::token_list::TokenList;
-use crate::models::{TokenLoadResult, TokenSource};
-use crate::services::token_service::{
+use crate::client::components::toast::{wait_for_toast_timeout, Toast, ToastTone};
+use crate::client::components::token_list::TokenList;
+use crate::client::models::{TokenLoadResult, TokenSource};
+use crate::client::services::token_service::{
     load_tokens, refresh_tokens_from_online, token_result_has_sparkline_data,
 };
 

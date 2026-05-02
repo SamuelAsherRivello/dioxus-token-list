@@ -10,6 +10,7 @@ nav-contact-short = C
 open-github-repository = Abrir repositorio do GitHub
 repopulate-database = Repopular banco de dados
 repopulate-db = Repopular DB
+call-server = Chamar servidor
 toggle-theme = Alternar tema
 theme = Tema
 language-selector = Selecionar idioma

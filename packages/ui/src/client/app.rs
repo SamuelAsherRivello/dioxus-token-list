@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::Route;
+use super::Route;
 
 #[component]
 pub fn App() -> Element {

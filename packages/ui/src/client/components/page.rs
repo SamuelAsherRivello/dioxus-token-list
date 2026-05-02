@@ -1,9 +1,13 @@
 use dioxus::prelude::*;
 
-use crate::Route;
+use crate::client::Route;
 
 #[component]
-pub fn Page(route: Route, #[props(default = false)] will_preload: bool, children: Element) -> Element {
+pub fn Page(
+    route: Route,
+    #[props(default = false)] will_preload: bool,
+    children: Element,
+) -> Element {
     let active_route = use_route::<Route>();
     let is_active = active_route == route;
 

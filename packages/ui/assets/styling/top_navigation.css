@@ -4,7 +4,7 @@
   z-index: 10;
   width: min(1120px, calc(100% - 40px));
   margin: 0 auto;
-  min-height: 74px;
+  min-height: 84px;
   padding: 0 20px;
   border-bottom: 1px solid var(--app-border);
   border-radius: 0 0 8px 8px;
@@ -14,7 +14,7 @@
 
 #top-navigation .toast-region {
   position: absolute;
-  top: 50%;
+  top: calc(50% + 100px);
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 20;
@@ -66,7 +66,7 @@
   gap: 12px;
   width: 100%;
   min-width: 0;
-  min-height: 74px;
+  min-height: 84px;
   white-space: nowrap;
 }
 
@@ -123,6 +123,36 @@
   margin-left: auto;
 }
 
+.developer-tools__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 58px;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--app-control) 48%, transparent);
+  box-sizing: border-box;
+}
+
+.developer-tools__label {
+  display: block;
+  color: var(--app-text-subtle);
+  font-size: 8px;
+  font-weight: 750;
+  line-height: 9px;
+  max-width: 24px;
+  text-align: center;
+  white-space: normal;
+}
+
+.developer-tools__controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
 #top-navigation .developer-tools__github {
   display: inline-flex;
   align-items: center;
@@ -167,6 +197,7 @@
 }
 
 .developer-tools__language,
+.developer-tools__call-server,
 .developer-tools__repopulate,
 .developer-tools__theme {
   display: inline-flex;
@@ -247,11 +278,8 @@
   flex: 0 0 auto;
 }
 
-.developer-tools__theme {
-  inline-size: 115.2px;
-}
-
 .developer-tools__language:hover,
+.developer-tools__call-server:hover,
 .developer-tools__repopulate:hover,
 .developer-tools__theme:hover {
   background: var(--app-control-hover);
@@ -262,13 +290,13 @@
 @media (max-width: 760px) {
   #top-navigation {
     width: min(100% - 28px, 1120px);
-    min-height: 58px;
+    min-height: 68px;
     padding: 7px 12px;
   }
 
   #top-navigation nav {
     gap: 8px;
-    min-height: 44px;
+    min-height: 54px;
   }
 
   .top-navigation__pages {
@@ -301,7 +329,21 @@
     min-inline-size: max-content;
   }
 
+  .developer-tools__group {
+    height: 46px;
+    padding: 3px 4px;
+  }
+
+  .developer-tools__label {
+    display: none;
+  }
+
+  .developer-tools__controls {
+    gap: 4px;
+  }
+
   .developer-tools__language,
+  .developer-tools__call-server,
   .developer-tools__repopulate,
   .developer-tools__theme {
     flex: 0 0 40px;
@@ -312,6 +354,7 @@
     gap: 0;
   }
 
+  .developer-tools__call-server span,
   .developer-tools__repopulate span,
   .developer-tools__theme span {
     display: none;
@@ -354,7 +397,13 @@
     gap: 4px;
   }
 
+  .developer-tools__group {
+    height: 42px;
+    padding: 3px;
+  }
+
   #top-navigation .developer-tools__github,
+  .developer-tools__call-server,
   .developer-tools__repopulate,
   .developer-tools__theme {
     flex: 0 0 36px;
@@ -392,7 +441,17 @@
     min-inline-size: 0;
   }
 
+  .developer-tools__group {
+    height: 40px;
+    padding: 2px;
+  }
+
+  .developer-tools__controls {
+    gap: 3px;
+  }
+
   #top-navigation .developer-tools__github,
+  .developer-tools__call-server,
   .developer-tools__repopulate,
   .developer-tools__theme {
     flex: 0 0 32px;

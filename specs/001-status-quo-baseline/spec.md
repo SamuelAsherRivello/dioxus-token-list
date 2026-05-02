@@ -77,7 +77,7 @@ A visitor can navigate to supporting Video, About, and Contact pages without los
 
 - If no usable local cache exists, the app must attempt online market data.
 - If cached data exists but lacks complete sparkline data, the app must prefer a fresh online load.
-- If browser database startup is delayed or unavailable, the app must still render from browser snapshot or online data when possible.
+- If browser local storage is unavailable or has no usable token snapshot, the app must still attempt online data when possible.
 - If online data fails and no usable cache exists, the app must present a readable error state.
 - If optional token values are missing, the app must show a not-available value rather than an empty or broken cell.
 - If sparkline values are missing or invalid, the app must show an unavailable sparkline state.
@@ -101,7 +101,7 @@ A visitor can navigate to supporting Video, About, and Contact pages without los
 - **FR-012**: The system MUST allow users to manually request a token database repopulation or online refresh from the app chrome.
 - **FR-013**: The system MUST persist usable token data locally so later app loads can render without waiting for a fresh online request when possible.
 - **FR-014**: The system MUST prefer cached data only when it contains usable sparkline data.
-- **FR-015**: The system MUST persist browser token snapshots separately from the browser database so the browser UI can render before database startup completes.
+- **FR-015**: The system MUST persist browser token snapshots in browser local storage so the browser UI can render returning data without waiting for native database support.
 - **FR-016**: The system MUST persist theme preference locally and default to dark theme when no preference exists.
 - **FR-017**: The system MUST persist language preference locally and default to English when no preference exists.
 - **FR-018**: The system MUST localize static app chrome for English, Spanish, Portuguese, and French.

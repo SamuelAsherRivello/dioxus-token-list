@@ -1,8 +1,8 @@
 # UI
 
-Shared Dioxus components for the web and desktop apps.
+Shared Dioxus UI, routes, models, assets, client services, and optional server-function probes for the web and desktop apps.
 
-Put components here when both targets should use the same UI. Keep platform-specific dependencies out of this crate; add those to `packages/web` or `packages/desktop` instead.
+Put shared app behavior here when both targets should use the same UI. Browser-only behavior is guarded with `wasm32` cfgs, and native-only persistence uses local SQLite behind non-wasm cfgs.
 
 ```text
 ui/
@@ -10,7 +10,11 @@ ui/
 │  ├─ images/
 │  └─ styling/
 └─ src/
-   ├─ body.rs
+   ├─ client/
+   │  ├─ components/
+   │  ├─ pages/
+   │  └─ services/
    ├─ lib.rs
-   └─ navbar.rs
+   └─ server/
+      └─ services/
 ```
